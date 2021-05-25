@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp"
+    android:elevation="@dimen/cardview_default_elevation"
+    android:outlineSpotShadowColor="@color/black"
+    android:background="@color/teal_700"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tvDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:padding="2dp"
+            android:text="27.04.2021"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="@color/white" />
+
+        <TextView
+            android:id="@+id/tvTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:padding="2dp"
+            android:text="21:00"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:background="@color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
+        app:layout_constraintStart_toEndOf="@+id/linearLayout"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvChangeAmount"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center_horizontal|center_vertical"
+        android:text="+15$"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
+        app:layout_constraintEnd_toStartOf="@+id/bMore"
+        app:layout_constraintStart_toEndOf="@+id/view"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/bMore"
+        style="@android:style/Widget.Holo.ImageButton"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:layout_width="30dp"
+        android:layout_height="0dp"
+        android:background="#00FFFFFF"
+        android:src="@drawable/more_icon"
+        app:layout_constraintBottom_toBottomOf="@+id/tvChangeAmount"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

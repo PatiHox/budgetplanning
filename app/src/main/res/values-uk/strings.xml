@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Budget Planning</string>
+    <string name="action_settings">Налаштування</string>
+    <string name="first_fragment_label">Планування бюджету</string>
+    <string name="second_fragment_label">Додати транзакцію</string>
+    <string name="next">Наступний</string>
+    <string name="previous">Попередній</string>
+    <string name="balance">Баланс</string>
+    <string name="income">Прибуток</string>
+    <string name="outlay">Витрати</string>
+    <string name="change_sum">Сума зміни</string>
+    <string name="change_sum_comment">Коментар (напр., де ви витратили гроші)</string>
+    <string name="change_sum_date">Час та дата транзакції</string>
+    <string name="now">Зараз</string>
+    <string name="add">Додати</string>
+    <string-array name="transaction_types">
+        <item>Витрачено</item>
+        <item>Отримано</item>
+    </string-array>
+    <string name="statistics">Статистика</string>
+    <string name="show_for_period">Показати дані за період</string>
+    <string name="day">День</string>
+    <string name="three_days">3 Дні</string>
+    <string name="week">Тиждень</string>
+    <string name="month">Місяць</string>
+    <string name="three_months">3 Місяці</string>
+    <string name="half_year">Півроку</string>
+    <string name="year">Рік</string>
+    <string name="change_balance">Змінити баланс</string>
+    <string name="set">Встановити</string>
+    <string name="skip">Пропустити</string>
+    <string name="balance_history">Історія змін балансу</string>
+    <string name="new_balance">Введіть новий баланс</string>
+
+    <string name="yes">Так</string>
+    <string name="cancel">Відміна</string>
+    <string name="save">Зберегти</string>
+    <string name="ok">Oк</string>
+
+
+    <string name="info">Інфо</string>
+    <string name="edit">Редагувати</string>
+    <string name="remove">Видалити</string>
+
+    <string name="change_sum_not_empty">Сума транзакції повинна бути заповнена!</string>
+    <string name="transaction_add_success">Транзакцію успішно додано!</string>
+
+
+</resources>
