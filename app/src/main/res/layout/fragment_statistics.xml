@@ -6,14 +6,20 @@
     android:layout_height="match_parent"
     tools:context=".fragments.statistics.StatisticsFragment">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <Spinner
+        android:id="@+id/sSelectChartType"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="WIP"
-        android:textSize="40sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/chart"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/sSelectChartType" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

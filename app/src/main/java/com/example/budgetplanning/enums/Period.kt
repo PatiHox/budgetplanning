@@ -1,6 +1,6 @@
 package com.example.budgetplanning.enums
 
-enum class Periods {
+enum class Period {
     DAY,
     THREE_DAYS,
     WEEK,

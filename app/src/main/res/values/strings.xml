@@ -52,5 +52,9 @@
     <string name="change_sum_not_empty">Transaction sum shouldn\'t be empty!</string>
     <string name="transaction_add_success">Transaction successfully added!</string>
 
+    <string-array name="statistics_modes">
+        <item>Income/Outlay</item>
+        <item>Balance changes</item>
+    </string-array>
 
 </resources>

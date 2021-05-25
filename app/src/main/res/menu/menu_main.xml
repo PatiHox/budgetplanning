@@ -2,7 +2,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.budgetplanning.MainActivity">
-    <group android:id="@+id/main_menu_group">
+    <group android:id="@+id/settings_group">
         <item
             android:id="@+id/action_settings"
             android:orderInCategory="100"
@@ -10,17 +10,7 @@
             android:icon="@drawable/settings_icon"
             app:showAsAction="ifRoom" />
     </group>
-    <group android:id="@+id/statistics_group">
-        <item
-            android:id="@+id/action_statistics"
-            android:orderInCategory="200"
-            android:title="@string/statistics"
-            app:showAsAction="never" />
-        <item
-            android:id="@+id/action_balance_change_history"
-            android:orderInCategory="300"
-            android:title="@string/balance_history"
-            app:showAsAction="never" />
+    <group android:id="@+id/time_select_group">
         <item
             android:id="@+id/action_show_for_period"
             android:icon="@drawable/clock_icon"
@@ -68,5 +58,17 @@
                 </group>
             </menu>
         </item>
+    </group>
+    <group android:id="@+id/navigation_group">
+        <item
+            android:id="@+id/action_statistics"
+            android:orderInCategory="200"
+            android:title="@string/statistics"
+            app:showAsAction="never" />
+        <item
+            android:id="@+id/action_balance_change_history"
+            android:orderInCategory="300"
+            android:title="@string/balance_history"
+            app:showAsAction="never" />
     </group>
 </menu>

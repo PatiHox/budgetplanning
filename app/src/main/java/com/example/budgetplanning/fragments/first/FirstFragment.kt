@@ -1,11 +1,8 @@
 package com.example.budgetplanning.fragments.first
 
-import android.content.Context
 import android.content.DialogInterface
 import android.content.SharedPreferences
 import android.graphics.Color
-import android.graphics.Point
-import android.graphics.Rect
 import android.os.Bundle
 import android.text.InputType
 import android.util.Log
@@ -13,7 +10,6 @@ import android.view.*
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -23,18 +19,13 @@ import com.example.budgetplanning.data.entities.BalanceChange
 import com.example.budgetplanning.data.viewmodels.BalanceChangeViewModel
 import com.example.budgetplanning.data.viewmodels.TransactionViewModel
 import com.example.budgetplanning.databinding.FragmentFirstBinding
-import com.example.budgetplanning.enums.Periods
+import com.example.budgetplanning.enums.Period
 import com.example.budgetplanning.fragments.first.recycler_view.TransactionAdapter
 import com.example.budgetplanning.fragments.first.recycler_view.TransactionAdapterDataObserver
 import com.example.budgetplanning.utils.DateUtils
 import com.example.budgetplanning.utils.TextUtils
-import org.json.JSONObject
-import org.json.JSONStringer
-import java.math.BigInteger
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
-import kotlin.properties.Delegates
 
 
 //TODO: Поправить гороизонтальное расположение экрана
@@ -221,9 +212,9 @@ class FirstFragment : Fragment() {
 
 
         periodStartDate = DateUtils.getPeriodStartDateFromNow(
-            Periods.values()[sharedPref.getInt(
+            Period.values()[sharedPref.getInt(
                 "period",
-                Periods.MONTH.ordinal
+                Period.MONTH.ordinal
             )]
         )
 
@@ -298,39 +289,39 @@ class FirstFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         this.mainMenu = menu
-        val period = sharedPref.getInt("period", Periods.MONTH.ordinal)
+        val period = sharedPref.getInt("period", Period.MONTH.ordinal)
         lastChecked = when (period) {
-            Periods.DAY.ordinal -> {
+            Period.DAY.ordinal -> {
                 mainMenu.findItem(R.id.action_show_for_period).subMenu.findItem(R.id.select_day).isChecked =
                     true
                 binding.tvForPeriod.setText(R.string.day)
                 R.id.select_day
             }
-            Periods.THREE_DAYS.ordinal -> {
+            Period.THREE_DAYS.ordinal -> {
                 mainMenu.findItem(R.id.action_show_for_period).subMenu.findItem(R.id.select_three_days).isChecked =
                     true
                 binding.tvForPeriod.setText(R.string.three_days)
                 R.id.select_three_days
             }
-            Periods.WEEK.ordinal -> {
+            Period.WEEK.ordinal -> {
                 mainMenu.findItem(R.id.action_show_for_period).subMenu.findItem(R.id.select_week).isChecked =
                     true
                 binding.tvForPeriod.setText(R.string.week)
                 R.id.select_week
             }
-            Periods.THREE_MONTHS.ordinal -> {
+            Period.THREE_MONTHS.ordinal -> {
                 mainMenu.findItem(R.id.action_show_for_period).subMenu.findItem(R.id.select_three_months).isChecked =
                     true
                 binding.tvForPeriod.setText(R.string.three_months)
                 R.id.select_three_months
             }
-            Periods.HALF_YEAR.ordinal -> {
+            Period.HALF_YEAR.ordinal -> {
                 mainMenu.findItem(R.id.action_show_for_period).subMenu.findItem(R.id.select_half_year).isChecked =
                     true
                 binding.tvForPeriod.setText(R.string.half_year)
                 R.id.select_half_year
             }
-            Periods.YEAR.ordinal -> {
+            Period.YEAR.ordinal -> {
                 mainMenu.findItem(R.id.action_show_for_period).subMenu.findItem(R.id.select_year).isChecked =
                     true
                 binding.tvForPeriod.setText(R.string.year)
@@ -365,31 +356,31 @@ class FirstFragment : Fragment() {
                     val periodId: Int = when (item.itemId) {
                         R.id.select_day -> {
                             binding.tvForPeriod.setText(R.string.day)
-                            Periods.DAY.ordinal
+                            Period.DAY.ordinal
                         }
                         R.id.select_half_year -> {
                             binding.tvForPeriod.setText(R.string.half_year)
-                            Periods.HALF_YEAR.ordinal
+                            Period.HALF_YEAR.ordinal
                         }
                         R.id.select_three_days -> {
                             binding.tvForPeriod.setText(R.string.three_days)
-                            Periods.THREE_DAYS.ordinal
+                            Period.THREE_DAYS.ordinal
                         }
                         R.id.select_three_months -> {
                             binding.tvForPeriod.setText(R.string.three_months)
-                            Periods.THREE_MONTHS.ordinal
+                            Period.THREE_MONTHS.ordinal
                         }
                         R.id.select_week -> {
                             binding.tvForPeriod.setText(R.string.week)
-                            Periods.WEEK.ordinal
+                            Period.WEEK.ordinal
                         }
                         R.id.select_year -> {
                             binding.tvForPeriod.setText(R.string.year)
-                            Periods.YEAR.ordinal
+                            Period.YEAR.ordinal
                         }
                         else -> {
                             binding.tvForPeriod.setText(R.string.month)
-                            Periods.MONTH.ordinal
+                            Period.MONTH.ordinal
                         }
                     }
                     sharedPref.edit().putInt("period", periodId).apply()

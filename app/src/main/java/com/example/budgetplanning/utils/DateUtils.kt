@@ -1,28 +1,28 @@
 package com.example.budgetplanning.utils
 
-import com.example.budgetplanning.enums.Periods
+import com.example.budgetplanning.enums.Period
 import java.time.LocalDateTime
 
 object DateUtils {
-    fun getPeriodStartDateFromNow(period: Periods): LocalDateTime{
+    fun getPeriodStartDateFromNow(period: Period): LocalDateTime{
         val now = LocalDateTime.now()
         return when(period){
-            Periods.DAY ->{
+            Period.DAY ->{
                 now.minusDays(1)
             }
-            Periods.THREE_DAYS ->{
+            Period.THREE_DAYS ->{
                 now.minusDays(3)
             }
-            Periods.WEEK ->{
+            Period.WEEK ->{
                 now.minusWeeks(1)
             }
-            Periods.THREE_MONTHS ->{
+            Period.THREE_MONTHS ->{
                 now.minusMonths(3)
             }
-            Periods.HALF_YEAR ->{
+            Period.HALF_YEAR ->{
                 now.minusMonths(6)
             }
-            Periods.YEAR ->{
+            Period.YEAR ->{
                 now.minusYears(1)
             }
             else -> {
