@@ -1,6 +1,19 @@
 <component name="InspectionProjectProfileManager">
   <profile version="1.0">
     <option name="myName" value="Project Default" />
+    <inspection_tool class="c2b4f2d8-9e89-4d1f-90eb-916f8cc03aed_AndroidManifestbestpracticesDisableBackups" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="c2b4f2d8-9e89-4d1f-90eb-916f8cc03aed_AndroidManifestbestpracticesexplicitlyDisableBackups" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="c2b4f2d8-9e89-4d1f-90eb-916f8cc03aed_AndroidWebViewbestpracticesDisableContentAccess" enabled="true" level="SENSEI ERROR" enabled_by_default="true" />
+    <inspection_tool class="c2b4f2d8-9e89-4d1f-90eb-916f8cc03aed_AndroidWebViewbestpracticesDisableFileAccess" enabled="true" level="SENSEI ERROR" enabled_by_default="true" />
+    <inspection_tool class="c2b4f2d8-9e89-4d1f-90eb-916f8cc03aed_AndroidWebViewbestpracticesDisableGeolocation" enabled="true" level="SENSEI ERROR" enabled_by_default="true" />
+    <inspection_tool class="c2b4f2d8-9e89-4d1f-90eb-916f8cc03aed_AndroidWebViewbestpracticesDisableJavaScript" enabled="true" level="SENSEI ERROR" enabled_by_default="true" />
+    <inspection_tool class="c2b4f2d8-9e89-4d1f-90eb-916f8cc03aed_AndroidWebViewbestpracticesInsecuremixedcontentmode" enabled="true" level="SENSEI ERROR" enabled_by_default="true" />
+    <inspection_tool class="c2b4f2d8-9e89-4d1f-90eb-916f8cc03aed_AndroidWebViewbestpracticesInsecuresettings" enabled="true" level="SENSEI WARNING" enabled_by_default="true" />
+    <inspection_tool class="c2b4f2d8-9e89-4d1f-90eb-916f8cc03aed_AndroidWebViewbestpracticesSetmixedcontentmode" enabled="true" level="SENSEI ERROR" enabled_by_default="true" />
+    <inspection_tool class="c2b4f2d8-9e89-4d1f-90eb-916f8cc03aed_Androidstoragebestpracticesinsecureoperatingmode" enabled="true" level="SENSEI ERROR" enabled_by_default="true" />
+    <inspection_tool class="c2b4f2d8-9e89-4d1f-90eb-916f8cc03aed_Manifestbestpracicesexplicitlydisablecleartexttraffic" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="c2b4f2d8-9e89-4d1f-90eb-916f8cc03aed_Manifestbestpracticesdisablecleartexttraffic" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="c2b4f2d8-9e89-4d1f-90eb-916f8cc03aed_Manifestbestpracticesexplicitexportedcomponents" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="fcd36335-ac86-4bef-8d30-062d8aae0364_CryptoCipherInsecureAsymmetricCryptographicAlgorithm" enabled="true" level="SENSEI ERROR" enabled_by_default="true" />
     <inspection_tool class="fcd36335-ac86-4bef-8d30-062d8aae0364_CryptoKeyAgreementGuideonApprovedCryptographicAlgorithm" enabled="true" level="SENSEI MARKED INFO" enabled_by_default="true" />
     <inspection_tool class="fcd36335-ac86-4bef-8d30-062d8aae0364_CryptoKeyAgreementInsecureCryptographicAlgorithm" enabled="true" level="SENSEI ERROR" enabled_by_default="true" />

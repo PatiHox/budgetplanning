@@ -56,7 +56,7 @@ class FirstFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        Log.d("FirstFragment" ,"onCreateView(): invoke")
+        Log.d("FirstFragment", "onCreateView(): invoke")
         if (_binding == null)
             _binding = FragmentFirstBinding.inflate(inflater, container, false)
         return binding.root
@@ -74,7 +74,7 @@ class FirstFragment : Fragment() {
     private fun updateScreen() {
         binding.tvBal.text = TextUtils.floatToMoney(balance, resources, false)
         binding.tvChange.text = TextUtils.floatToMoney(change, resources)
-        when{
+        when {
             change >= 0 -> binding.tvChange.setTextColor(Color.parseColor("#174300"))
             else -> binding.tvChange.setTextColor(Color.parseColor("#7C0000"))
         }
@@ -108,10 +108,11 @@ class FirstFragment : Fragment() {
             builder.setTitle(getString(R.string.change_balance))
 
             // Set up the input
-            val input: EditText = EditText(view.context)
+            val input = EditText(view.context)
             input.hint = getString(R.string.new_balance)
             input.setText(balance.toString())
-            input.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_SIGNED or InputType.TYPE_NUMBER_FLAG_DECIMAL
+            input.inputType =
+                InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_SIGNED or InputType.TYPE_NUMBER_FLAG_DECIMAL
 
             // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
             input.setRawInputType(InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_SIGNED or InputType.TYPE_NUMBER_FLAG_DECIMAL or InputType.TYPE_NUMBER_VARIATION_NORMAL)
@@ -121,13 +122,15 @@ class FirstFragment : Fragment() {
             builder.setView(input)
 
             // Set up the buttons
-            builder.setPositiveButton(getString(R.string.save),
-                DialogInterface.OnClickListener { _, _ ->
-                    saveNewBalance(input.text.toString().toFloat())
-                })
+            builder.setPositiveButton(
+                getString(R.string.save)
+            ) { _, _ ->
+                saveNewBalance(input.text.toString().toFloat())
+            }
 
-            builder.setNegativeButton(getString(R.string.cancel),
-                DialogInterface.OnClickListener { dialog, _ -> dialog.cancel() })
+            builder.setNegativeButton(
+                getString(R.string.cancel)
+            ) { dialog, _ -> dialog.cancel() }
 
             builder.show()
         }
@@ -178,6 +181,9 @@ class FirstFragment : Fragment() {
 
     // Only works if this func is called BEFORE actual data removal
     private fun dataRemoved(posStart: Int, count: Int) {
+        // Snapshot data before async function
+        val allTransactions = transactionAdapter.getItems()
+
         balanceChangeViewModel.getLast.observe(viewLifecycleOwner, {
             // Кастыль :Р
             val balanceChange: BalanceChange = when {
@@ -187,7 +193,7 @@ class FirstFragment : Fragment() {
 
             transactionAdapter.apply {
                 for (i in posStart until posStart + count) {
-                    val removedTransaction = getItemAt(i)
+                    val removedTransaction = allTransactions[i]
                     // If removedTransaction even changed anything
                     if (removedTransaction.dateTime.isAfter(periodStartDate)) {
                         // If removedTransaction affected balance
@@ -399,7 +405,7 @@ class FirstFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        Log.d("FirstFragment" ,"onDestroyView(): clearing screen data")
+        Log.d("FirstFragment", "onDestroyView(): clearing screen data")
         clearBalData()
         lastChecked = null
         _binding = null

@@ -24,6 +24,7 @@ import com.example.budgetplanning.databinding.TimePickerBinding
 import com.example.budgetplanning.utils.KeyboardUtils
 import com.example.budgetplanning.utils.TextUtils
 import java.time.LocalDateTime
+import java.time.Month
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
@@ -67,8 +68,6 @@ class SecondFragment : Fragment(), AdapterView.OnItemSelectedListener {
     }
 
     private class ChangeSumTextWatcher(val binding: FragmentSecondBinding) : TextWatcher {
-        // TODO: Сделать автоматическое добавление символа валюты в конце
-
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -90,7 +89,6 @@ class SecondFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
         // etChangeSum
         val etChangeSum: EditText = binding.etChangeSum
-        // TODO: Унести это в strings.xml
         etChangeSum.hint = etChangeSum.hint.toString() + "(${TextUtils.getMoneySymbol()})"
         etChangeSum.addTextChangedListener(ChangeSumTextWatcher(binding))
 
@@ -124,7 +122,7 @@ class SecondFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
         val comment = binding.etChangeComment.text.toString()
 
-        val transaction = Transaction(changeAmount = changeAmount, comment = comment)
+        val transaction = Transaction(changeAmount = changeAmount, comment = comment, dateTime = localDateTime)
         transactionViewModel.insertAll(transaction)
         Toast.makeText(requireContext(), "Successfully added new transaction", Toast.LENGTH_LONG)
             .show()
@@ -164,7 +162,7 @@ class SecondFragment : Fragment(), AdapterView.OnItemSelectedListener {
             val datePicker = dpBinding.dpDate
             dateTime = LocalDateTime.of(
                 datePicker.year,
-                datePicker.month,
+                datePicker.month+1,
                 datePicker.dayOfMonth,
                 0, 0
             )
