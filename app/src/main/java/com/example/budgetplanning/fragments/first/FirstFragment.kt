@@ -1,11 +1,9 @@
 package com.example.budgetplanning.fragments.first
 
-import android.content.DialogInterface
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.text.InputType
-import android.text.TextWatcher
 import android.util.Log
 import android.view.*
 import android.widget.EditText
