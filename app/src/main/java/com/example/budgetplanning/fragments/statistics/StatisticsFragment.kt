@@ -77,7 +77,8 @@ class StatisticsFragment : Fragment(), AdapterView.OnItemSelectedListener{
         balanceChangeViewModel = ViewModelProvider(this).get(BalanceChangeViewModel::class.java)
 
         // TODO: This could be removed when OnCreateOptions is done
-//        changeCurrentMode(StatisticsMode.Transactions)
+        changeCurrentMode(StatisticsMode.Transactions, Period.DAY)
+//        currentMode = StatisticsMode.BalanceChanges
     }
 
 
@@ -186,11 +187,11 @@ class StatisticsFragment : Fragment(), AdapterView.OnItemSelectedListener{
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        TODO("Not yet implemented")
+//        TODO("Not yet implemented")
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
-        TODO("Not yet implemented")
+//        TODO("Not yet implemented")
     }
 
 

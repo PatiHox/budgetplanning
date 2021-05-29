@@ -72,7 +72,8 @@ class SecondFragment : Fragment(), AdapterView.OnItemSelectedListener {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            binding.bAdd.isEnabled = binding.etChangeSum.text.isNotEmpty()
+            val regex = Regex("^\\d{1,6}(\\.\\d{0,2})?")
+            binding.bAdd.isEnabled = binding.etChangeSum.text.isNotEmpty() && regex.matches(s!!)
         }
 
         override fun afterTextChanged(s: Editable?) {}

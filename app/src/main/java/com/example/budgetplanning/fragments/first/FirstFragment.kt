@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.text.InputType
+import android.text.TextWatcher
 import android.util.Log
 import android.view.*
 import android.widget.EditText
@@ -96,7 +97,6 @@ class FirstFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
         // FloatingActionButton
         binding.fabAddTransaction.setOnClickListener {
             findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
@@ -110,9 +110,14 @@ class FirstFragment : Fragment() {
             // Set up the input
             val input: EditText = EditText(view.context)
             input.hint = getString(R.string.new_balance)
+            input.setText(balance.toString())
+            input.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_SIGNED or InputType.TYPE_NUMBER_FLAG_DECIMAL
 
             // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
             input.setRawInputType(InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_SIGNED or InputType.TYPE_NUMBER_FLAG_DECIMAL or InputType.TYPE_NUMBER_VARIATION_NORMAL)
+
+            input.addTextChangedListener(MoneyNumberWatcher())
+
             builder.setView(input)
 
             // Set up the buttons
@@ -151,8 +156,6 @@ class FirstFragment : Fragment() {
     }
 
     @Deprecated("Outdated. Needs rework")
-
-
     private fun dataInserted(posStart: Int, count: Int) {
         transactionAdapter.apply {
             for (i in posStart until posStart + count) {

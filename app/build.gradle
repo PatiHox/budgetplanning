@@ -10,6 +10,14 @@ repositories {
 }
 
 android {
+    signingConfigs {
+        debug {
+            storeFile file('/home/PatiHox/ExampleKeyStore/budget-planning.jks')
+            storePassword '8_zAXV#6(S'
+            keyPassword '8_zAXV#6(S'
+            keyAlias 'budget-planning-key'
+        }
+    }
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
 
