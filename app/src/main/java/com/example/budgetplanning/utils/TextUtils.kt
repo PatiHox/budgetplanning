@@ -8,8 +8,8 @@ import java.util.*
 
 
 object TextUtils {
-    fun floatToMoney(
-        input: Float,
+    fun doubleToMoney(
+        input: Double,
         resources: Resources,
         doAddPositiveSign: Boolean = true
     ): String {

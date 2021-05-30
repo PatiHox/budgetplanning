@@ -115,7 +115,7 @@ class SecondFragment : Fragment(), AdapterView.OnItemSelectedListener {
     private fun insertIntoDatabase() {
 
         var changeAmount =
-            binding.etChangeSum.text.toString().removeSuffix(".").toFloat()
+            binding.etChangeSum.text.toString().removeSuffix(".").toDouble()
         if (isSumNegative){
             changeAmount = 0 - changeAmount
         }

@@ -8,6 +8,6 @@ import java.time.LocalDateTime
 @Entity(tableName = "bal_change")
 data class BalanceChange(
     @PrimaryKey(autoGenerate = true) val id: Int? = null,
-    @ColumnInfo(name = "new_value") val newValue: Float,
+    @ColumnInfo(name = "new_value") val newValue: Double,
     @ColumnInfo(name = "date_time") val dateTime: LocalDateTime
     )

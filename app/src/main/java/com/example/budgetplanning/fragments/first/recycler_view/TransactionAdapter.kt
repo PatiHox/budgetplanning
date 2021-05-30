@@ -43,7 +43,8 @@ class TransactionAdapter(
     }
 
     fun removeItemAt(position: Int): Transaction {
-        notifyItemRemoved(position)
+//        notifyItemRemoved(position)
+        notifyDataSetChanged()
         return transactions.removeAt(position)
     }
 

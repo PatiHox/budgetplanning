@@ -13,7 +13,7 @@ import com.example.budgetplanning.data.entities.BalanceChange
 import com.example.budgetplanning.data.entities.Transaction
 import com.example.budgetplanning.utils.DateConverter
 
-@Database(entities = [Transaction::class, BalanceChange::class], version = 6, exportSchema = false)
+@Database(entities = [Transaction::class, BalanceChange::class], version = 7, exportSchema = false)
 @TypeConverters(DateConverter::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun transactionDao(): TransactionDao

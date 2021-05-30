@@ -1,18 +1,13 @@
 package com.example.budgetplanning.fragments.first.recycler_view
 
-import android.app.ActionBar
 import android.content.DialogInterface
 import android.text.InputType
-import android.util.DisplayMetrics
 import android.util.Log
 import android.util.TypedValue
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
-import androidx.core.view.marginLeft
-import androidx.core.view.marginTop
 import androidx.recyclerview.widget.RecyclerView
 import com.example.budgetplanning.R
 import com.example.budgetplanning.data.entities.Transaction
@@ -54,7 +49,7 @@ class TransactionViewHolder(val binding: TransactionItemBinding) :
         setDateText(boundTransaction.dateTime.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)))
         setTimeText(boundTransaction.dateTime.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM)))
         setChangeAmountText(
-            TextUtils.floatToMoney(
+            TextUtils.doubleToMoney(
                 boundTransaction.changeAmount,
                 binding.root.resources
             )
@@ -202,7 +197,7 @@ class TransactionViewHolder(val binding: TransactionItemBinding) :
                                         } else {
                                             val newTransaction = Transaction(
                                                 boundTransaction.id,
-                                                etChangeAmount.text.toString().toFloat(),
+                                                etChangeAmount.text.toString().toDouble(),
                                                 DateConverter.toLocalDateTime(etChangeDateTime.text.toString())!!,
                                                 etChangeComment.text.toString()
                                             )

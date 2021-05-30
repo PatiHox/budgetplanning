@@ -27,8 +27,6 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 
-//TODO: Поправить гороизонтальное расположение экрана
-
 class FirstFragment : Fragment() {
     private var _binding: FragmentFirstBinding? = null
 
@@ -44,7 +42,7 @@ class FirstFragment : Fragment() {
     private lateinit var mainMenu: Menu
 
     private val transactionDataObserver =
-        TransactionAdapterDataObserver(::dataInserted, ::dataRemoved, ::dataChanged)
+        TransactionAdapterDataObserver(/*::dataInserted,*/ ::dataRemoved, ::dataChanged)
 
     private var _sharedPref: SharedPreferences? = null
 
@@ -60,27 +58,27 @@ class FirstFragment : Fragment() {
         return binding.root
     }
 
-    private var balance: Float = 0f
-    private var income: Float = 0f
-    private var outlay: Float = 0f
-    private val change: Float
+    private var balance: Double = 0.0
+    private var income: Double = 0.0
+    private var outlay: Double = 0.0
+    private val change: Double
         get() {
             return income + outlay
         }
 
 
     private fun updateScreen() {
-        binding.tvBal.text = TextUtils.floatToMoney(balance, resources, false)
-        binding.tvChange.text = TextUtils.floatToMoney(change, resources)
+        binding.tvBal.text = TextUtils.doubleToMoney(balance, resources, false)
+        binding.tvChange.text = TextUtils.doubleToMoney(change, resources)
         when {
             change >= 0 -> binding.tvChange.setTextColor(Color.parseColor("#174300"))
             else -> binding.tvChange.setTextColor(Color.parseColor("#7C0000"))
         }
-        binding.tvIncome.text = TextUtils.floatToMoney(income, resources)
-        binding.tvOutlay.text = TextUtils.floatToMoney(outlay, resources)
+        binding.tvIncome.text = TextUtils.doubleToMoney(income, resources)
+        binding.tvOutlay.text = TextUtils.doubleToMoney(outlay, resources)
     }
 
-    private fun saveNewBalance(newBal: Float) {
+    private fun saveNewBalance(newBal: Double) {
         Log.d("FirstFragment", "saveNewBalance() call with newBal = $newBal")
         balanceChangeViewModel.insertAll(
             BalanceChange(
@@ -108,14 +106,28 @@ class FirstFragment : Fragment() {
             // Set up the input
             val input = EditText(view.context)
             input.hint = getString(R.string.new_balance)
-            input.setText(balance.toString())
+            input.setText(balance.toBigDecimal().toString())
             input.inputType =
                 InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_SIGNED or InputType.TYPE_NUMBER_FLAG_DECIMAL
 
             // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
             input.setRawInputType(InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_SIGNED or InputType.TYPE_NUMBER_FLAG_DECIMAL or InputType.TYPE_NUMBER_VARIATION_NORMAL)
 
-            input.addTextChangedListener(MoneyNumberWatcher())
+            val regex = Regex("^(\\d+)(?:\\.\\d{0,2})?")
+
+            val regexResult = regex.find(balance.toBigDecimal().toString())
+
+            val textWatcher: MoneyNumberWatcher = when {
+                regexResult == null || regexResult.groupValues[1].length <= 6 -> {
+                    MoneyNumberWatcher()
+                }
+                else -> {
+                    MoneyNumberWatcher(regexResult.groupValues[1].length)
+
+                }
+            }
+
+            input.addTextChangedListener(textWatcher)
 
             builder.setView(input)
 
@@ -123,7 +135,7 @@ class FirstFragment : Fragment() {
             builder.setPositiveButton(
                 getString(R.string.save)
             ) { _, _ ->
-                saveNewBalance(input.text.toString().toFloat())
+                saveNewBalance(input.text.toString().toDouble())
             }
 
             builder.setNegativeButton(
@@ -178,9 +190,15 @@ class FirstFragment : Fragment() {
     private lateinit var periodStartDate: LocalDateTime
 
     // Only works if this func is called BEFORE actual data removal
+    // Also soft disabled because causes indexOutOfBoundsException
     private fun dataRemoved(posStart: Int, count: Int) {
         // Snapshot data before async function
+        // And i guess it's still too late
         val allTransactions = transactionAdapter.getItems()
+
+
+
+        Log.d("FirstFragment", "dataRemoved(): allTransactions.size = ${allTransactions.size}")
 
         balanceChangeViewModel.getLast.observe(viewLifecycleOwner, {
             // Кастыль :Р
@@ -411,8 +429,8 @@ class FirstFragment : Fragment() {
     }
 
     private fun clearBalData() {
-        outlay = 0f
-        income = 0f
-        balance = 0f
+        outlay = 0.0
+        income = 0.0
+        balance = 0.0
     }
 }
