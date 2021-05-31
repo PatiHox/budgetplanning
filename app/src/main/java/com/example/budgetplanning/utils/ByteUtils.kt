@@ -1,12 +1,9 @@
-package com.example.budgetplanning.utils;
+package com.example.budgetplanning.utils
 
-import org.jetbrains.annotations.NotNull;
-
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
+import java.nio.ByteBuffer
 
 object ByteUtils {
-    fun Long.lastThreeBytesToFloat(): Float{
+    fun Long.lastThreeBytesToFloat(): Float {
         val itemByteBuffer = ByteBuffer.allocate(Long.SIZE_BYTES)
         itemByteBuffer.putLong(this)
 

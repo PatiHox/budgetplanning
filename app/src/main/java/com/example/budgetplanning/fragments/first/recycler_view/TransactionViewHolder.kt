@@ -1,7 +1,9 @@
 package com.example.budgetplanning.fragments.first.recycler_view
 
 import android.content.DialogInterface
+import android.text.Editable
 import android.text.InputType
+import android.text.TextWatcher
 import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -16,6 +18,7 @@ import com.example.budgetplanning.databinding.TimePickerBinding
 import com.example.budgetplanning.databinding.TransactionItemBinding
 import com.example.budgetplanning.utils.DateConverter
 import com.example.budgetplanning.utils.TextUtils
+import java.text.DecimalFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -23,7 +26,8 @@ import kotlin.properties.Delegates
 
 
 class TransactionViewHolder(val binding: TransactionItemBinding) :
-    RecyclerView.ViewHolder(binding.root) {
+    RecyclerView.ViewHolder(binding.root),
+    TextWatcher {
 
     private fun setDateText(date: String) {
         binding.tvDate.text = date
@@ -69,14 +73,14 @@ class TransactionViewHolder(val binding: TransactionItemBinding) :
                         val alertBuilder: AlertDialog.Builder = AlertDialog.Builder(context)
                         alertBuilder.setTitle(context.getString(R.string.remove) + "?")
 
-                        alertBuilder.setPositiveButton(context.getString(R.string.yes),
-                            DialogInterface.OnClickListener { _, _ ->
-                                parentAdapter.transactionViewModel.delete(boundTransaction)
-                                parentAdapter.removeItemAt(adapterPosition)
-                            })
+                        alertBuilder.setPositiveButton(context.getString(R.string.yes)
+                        ) { _, _ ->
+                            parentAdapter.transactionViewModel.delete(boundTransaction)
+                            parentAdapter.removeItemAt(adapterPosition)
+                        }
 
-                        alertBuilder.setNegativeButton(context.getString(R.string.cancel),
-                            DialogInterface.OnClickListener { dialog, _ -> dialog.cancel() })
+                        alertBuilder.setNegativeButton(context.getString(R.string.cancel)
+                        ) { dialog, _ -> dialog.cancel() }
 
                         alertBuilder.show()
                         true
@@ -91,8 +95,12 @@ class TransactionViewHolder(val binding: TransactionItemBinding) :
                         linearLayout.orientation = LinearLayout.VERTICAL
                         val etChangeAmount = EditText(context).also {
                             it.hint = context.getString(R.string.change_sum)
-                            it.setText(boundTransaction.changeAmount.toString())
+                            val decFor = DecimalFormat("#0.00")
+                            it.setText(decFor.format(boundTransaction.changeAmount))
                             it.setRawInputType(InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL or InputType.TYPE_NUMBER_FLAG_SIGNED)
+                            it.inputType =
+                                InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL or InputType.TYPE_NUMBER_FLAG_SIGNED
+                            it.addTextChangedListener(this)
                         }
                         val etChangeComment = EditText(binding.root.context).also {
                             it.hint = context.getString(R.string.change_sum_comment)
@@ -119,7 +127,7 @@ class TransactionViewHolder(val binding: TransactionItemBinding) :
                                 val datePicker = dpBinding.dpDate
                                 dateTime = LocalDateTime.of(
                                     datePicker.year,
-                                    datePicker.month,
+                                    datePicker.month + 1,
                                     datePicker.dayOfMonth,
                                     0, 0
                                 )
@@ -210,6 +218,7 @@ class TransactionViewHolder(val binding: TransactionItemBinding) :
                                             iEditAlertDialog.dismiss()
                                         }
                                     }
+                                    this.bSave = bSave
                                 }
                             )
                         }
@@ -223,7 +232,8 @@ class TransactionViewHolder(val binding: TransactionItemBinding) :
                     }
                     R.id.iInfo -> {
 
-                        val iEditAlertDialogBuilder: AlertDialog.Builder = AlertDialog.Builder(context)
+                        val iEditAlertDialogBuilder: AlertDialog.Builder =
+                            AlertDialog.Builder(context)
                         iEditAlertDialogBuilder.setTitle(context.getString(R.string.info))
 
                         val linearLayout = LinearLayout(context)
@@ -240,18 +250,42 @@ class TransactionViewHolder(val binding: TransactionItemBinding) :
                         }
 
 
-                        for(tv in mutableListOf(tvChangeAmount, tvChangeComment, tvChangeDateTime)){
-                            tv.paint.textSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20.0f, context.resources.displayMetrics)
+                        for (tv in mutableListOf(
+                            tvChangeAmount,
+                            tvChangeComment,
+                            tvChangeDateTime
+                        )) {
+                            tv.paint.textSize = TypedValue.applyDimension(
+                                TypedValue.COMPLEX_UNIT_DIP,
+                                20.0f,
+                                context.resources.displayMetrics
+                            )
 //                            tv.gravity = Gravity.CENTER_HORIZONTAL
                             val lp = LinearLayout.LayoutParams(
                                 LinearLayout.LayoutParams.MATCH_PARENT,
                                 LinearLayout.LayoutParams.WRAP_CONTENT,
                                 0f
-                            ).also{
-                                val left = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5.0f, context.resources.displayMetrics).toInt()
-                                val top = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5.0f, context.resources.displayMetrics).toInt()
-                                val right = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5.0f, context.resources.displayMetrics).toInt()
-                                val bottom = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 15.0f, context.resources.displayMetrics).toInt()
+                            ).also {
+                                val left = TypedValue.applyDimension(
+                                    TypedValue.COMPLEX_UNIT_DIP,
+                                    5.0f,
+                                    context.resources.displayMetrics
+                                ).toInt()
+                                val top = TypedValue.applyDimension(
+                                    TypedValue.COMPLEX_UNIT_DIP,
+                                    5.0f,
+                                    context.resources.displayMetrics
+                                ).toInt()
+                                val right = TypedValue.applyDimension(
+                                    TypedValue.COMPLEX_UNIT_DIP,
+                                    5.0f,
+                                    context.resources.displayMetrics
+                                ).toInt()
+                                val bottom = TypedValue.applyDimension(
+                                    TypedValue.COMPLEX_UNIT_DIP,
+                                    15.0f,
+                                    context.resources.displayMetrics
+                                ).toInt()
                                 it.setMargins(left, top, right, bottom)
                             }
                             tv.layoutParams = lp
@@ -271,8 +305,7 @@ class TransactionViewHolder(val binding: TransactionItemBinding) :
                         })
                         linearLayout.addView(tvChangeDateTime)
 
-                        iEditAlertDialogBuilder.setNeutralButton(R.string.ok){
-                            _,_ ->
+                        iEditAlertDialogBuilder.setNeutralButton(R.string.ok) { _, _ ->
                         }
 
                         iEditAlertDialogBuilder.setView(linearLayout)
@@ -301,6 +334,21 @@ class TransactionViewHolder(val binding: TransactionItemBinding) :
                 popupMenu.show()
             }
         }
+    }
+
+    var bSave: Button? = null
+
+    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+    }
+
+    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+        if (bSave != null /*&& s != null*/) {
+            val regex = Regex("^[-,+]?\\d{1,6}([\\.,]\\d{0,2})?")
+            bSave!!.isEnabled = s!!.isNotEmpty() && regex.matches(s)
+        }
+    }
+
+    override fun afterTextChanged(s: Editable?) {
     }
 
 }

@@ -1,5 +1,6 @@
 package com.example.budgetplanning.utils
 
+import com.example.budgetplanning.data.entities.BalanceChange
 import com.example.budgetplanning.data.entities.Transaction
 import com.example.budgetplanning.enums.Period
 import java.time.LocalDateTime
@@ -35,6 +36,15 @@ object DateUtils {
     fun getFirstTransaction(transactions: List<Transaction>): Transaction {
         var first = transactions[0]
         for (t in transactions) {
+            if (t.dateTime.isBefore(first.dateTime))
+                first = t
+        }
+        return first
+    }
+
+    fun getFirstBalanceChange(balanceChange: List<BalanceChange>): BalanceChange {
+        var first = balanceChange[0]
+        for (t in balanceChange) {
             if (t.dateTime.isBefore(first.dateTime))
                 first = t
         }

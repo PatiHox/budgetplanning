@@ -34,7 +34,7 @@
     <fragment
         android:id="@+id/StatisticsFragment"
         android:name="com.example.budgetplanning.fragments.statistics.StatisticsFragment"
-        android:label="fragment_statistics"
+        android:label="Statistics"
         tools:layout="@layout/fragment_statistics" >
         <action
             android:id="@+id/action_statisticsFragment_to_FirstFragment"

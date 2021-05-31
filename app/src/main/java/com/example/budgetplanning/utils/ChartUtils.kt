@@ -1,15 +1,9 @@
 package com.example.budgetplanning.utils
 
-import android.util.Log
-import androidx.core.util.rangeTo
-import com.example.budgetplanning.data.entities.Transaction
 import com.example.budgetplanning.enums.Period
 import com.example.budgetplanning.utils.ByteUtils.lastThreeBytesToFloat
-import java.lang.Exception
-import java.nio.ByteBuffer
+import java.time.Duration
 import java.time.LocalDateTime
-import java.time.Duration;
-import kotlin.math.ceil
 import kotlin.math.floor
 
 object ChartUtils {
@@ -28,12 +22,12 @@ object ChartUtils {
 
     }*/
 
-    fun getXPosOfTransaction(
-        firstTransaction: Transaction,
+    fun getXPosOfDateTime(
+        firstDateTime: LocalDateTime,
         statisticsPeriod: Period,
-        transaction: Transaction
+        dateTime: LocalDateTime
     ): Float {
-        val duration = Duration.between(firstTransaction.dateTime, transaction.dateTime)
+        val duration = Duration.between(firstDateTime, dateTime)
 
         return when (statisticsPeriod) {
             Period.DAY -> {
@@ -46,16 +40,16 @@ object ChartUtils {
                 floor(duration.toDays().lastThreeBytesToFloat() / 7f)
             }
             Period.MONTH -> {
-                (transaction.dateTime.year - firstTransaction.dateTime.year) * 12 + (transaction.dateTime.month.value - firstTransaction.dateTime.month.value).toFloat()
+                (dateTime.year - firstDateTime.year) * 12 + (dateTime.month.value - firstDateTime.month.value).toFloat()
             }
             Period.THREE_MONTHS -> {
-                floor((transaction.dateTime.year - firstTransaction.dateTime.year) * 12 + (transaction.dateTime.month.value - firstTransaction.dateTime.month.value).toFloat() / 3f)
+                floor((dateTime.year - firstDateTime.year) * 12 + (dateTime.month.value - firstDateTime.month.value).toFloat() / 3f)
             }
             Period.HALF_YEAR -> {
-                floor((transaction.dateTime.year - firstTransaction.dateTime.year) * 12 + (transaction.dateTime.month.value - firstTransaction.dateTime.month.value).toFloat() / 6f)
+                floor((dateTime.year - firstDateTime.year) * 12 + (dateTime.month.value - firstDateTime.month.value).toFloat() / 6f)
             }
             Period.YEAR -> {
-                (transaction.dateTime.year - firstTransaction.dateTime.year).toFloat()
+                (dateTime.year - firstDateTime.year).toFloat()
             }
         }
 

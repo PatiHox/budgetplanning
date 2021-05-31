@@ -24,7 +24,7 @@ class MoneyNumberWatcher(var maxIntLength: Int = 6) : TextWatcher {
         if (Regex("0").matches(s!!) && after != 0) {
             Log.d("MoneyNumberWatcher", "Replacing zero with new digit")
             replaceZero = true
-        } else if (Regex("[-,+]?\\d").matches(s!!) && after == 0) {
+        } else if (Regex("[-+]?\\d").matches(s!!) && after == 0) {
             Log.d("MoneyNumberWatcher", "Removing last digit!")
             setToZero = true
         } else {
@@ -37,7 +37,7 @@ class MoneyNumberWatcher(var maxIntLength: Int = 6) : TextWatcher {
 
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
         if (!setToZero && !replaceZero) {
-            val regex = Regex("^[-,+]?\\d{1,$maxIntLength}(\\.\\d{0,2})?")
+            val regex = Regex("^[-+]?\\d{1,$maxIntLength}([\\.,]\\d{0,2})?")
             Log.d(
                 "MoneyNumberWatcher", "onTextChanged(): changed string: \"$s\" " +
                         "changes start at: $start with count: $count and replaced string length: $before"

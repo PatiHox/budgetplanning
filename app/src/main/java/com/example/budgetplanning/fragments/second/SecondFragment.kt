@@ -71,7 +71,7 @@ class SecondFragment : Fragment(), AdapterView.OnItemSelectedListener {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            val regex = Regex("^\\d{1,6}(\\.\\d{0,2})?")
+            val regex = Regex("^\\d{1,6}([\\.,]\\d{0,2})?")
             binding.bAdd.isEnabled = binding.etChangeSum.text.isNotEmpty() && regex.matches(s!!)
         }
 

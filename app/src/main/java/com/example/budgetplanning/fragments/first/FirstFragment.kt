@@ -23,6 +23,7 @@ import com.example.budgetplanning.fragments.first.recycler_view.TransactionAdapt
 import com.example.budgetplanning.fragments.first.recycler_view.TransactionAdapterDataObserver
 import com.example.budgetplanning.utils.DateUtils
 import com.example.budgetplanning.utils.TextUtils
+import java.text.DecimalFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -106,14 +107,16 @@ class FirstFragment : Fragment() {
             // Set up the input
             val input = EditText(view.context)
             input.hint = getString(R.string.new_balance)
-            input.setText(balance.toBigDecimal().toString())
+            val decFor = DecimalFormat("#0.00")
+            input.setText(decFor.format(balance))
+
             input.inputType =
                 InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_SIGNED or InputType.TYPE_NUMBER_FLAG_DECIMAL
 
             // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
             input.setRawInputType(InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_SIGNED or InputType.TYPE_NUMBER_FLAG_DECIMAL or InputType.TYPE_NUMBER_VARIATION_NORMAL)
 
-            val regex = Regex("^(\\d+)(?:\\.\\d{0,2})?")
+            val regex = Regex("^[-+]?(\\d+)(?:[\\.,]\\d{0,2})?")
 
             val regexResult = regex.find(balance.toBigDecimal().toString())
 
@@ -231,7 +234,6 @@ class FirstFragment : Fragment() {
 
     }
 
-    // TODO: Сделать так что бы функции обновления учитывали ещё и то что входит ли последнее изменение баланса в текущий период
     private fun dataChanged() {
         Log.d("FirstFragmentDataObserverMethods", "dataChanged() called")
 

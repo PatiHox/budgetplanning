@@ -8,6 +8,7 @@ import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.budgetplanning.R
@@ -18,7 +19,10 @@ import com.example.budgetplanning.enums.Period
 import com.example.budgetplanning.enums.StatisticsMode
 import com.example.budgetplanning.utils.ChartUtils
 import com.example.budgetplanning.utils.DateUtils
+import com.example.budgetplanning.utils.MyEntryHelper
 import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.*
 
 
@@ -54,7 +58,8 @@ class StatisticsFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     private lateinit var transactionViewModel: TransactionViewModel
     private lateinit var balanceChangeViewModel: BalanceChangeViewModel
-    private lateinit var chart: BarChart
+    private lateinit var barChart: BarChart
+    private lateinit var lineChart: LineChart
 
     //    private lateinit var currentChartMode: StatisticsMode
     private val currentChartPeriod get() = _currentChartPeriod!!
@@ -76,7 +81,9 @@ class StatisticsFragment : Fragment(), AdapterView.OnItemSelectedListener {
         _sharedPref = activity?.getPreferences(AppCompatActivity.MODE_PRIVATE)
 
         // BarChart
-        chart = binding.chart
+        barChart = binding.barChart
+        lineChart = binding.lineChart
+
         //TODO: Найти способ увеличить текст на графике
 //        chart.text
 
@@ -88,11 +95,22 @@ class StatisticsFragment : Fragment(), AdapterView.OnItemSelectedListener {
     }
 
 
-    private fun changeCurrentMode(newMode: StatisticsMode) {
+    private fun changeCurrentMode(newMode: StatisticsMode, suspendScreenUpdate: Boolean = false) {
+        when (newMode) {
+            StatisticsMode.Transactions -> {
+                barChart.isVisible = true
+                lineChart.isVisible = false
+            }
+            StatisticsMode.BalanceChanges -> {
+                barChart.isVisible = false
+                lineChart.isVisible = true
+            }
+        }
         if (newMode != _currentChartMode) {
             _currentChartMode = newMode
             transactionViewModel.getAll.removeObservers(viewLifecycleOwner)
-            updateChartScreen()
+            if (!suspendScreenUpdate)
+                updateChartScreen()
         }
     }
 
@@ -106,6 +124,109 @@ class StatisticsFragment : Fragment(), AdapterView.OnItemSelectedListener {
     private fun updateChartScreen() {
         when (currentChartMode) {
             StatisticsMode.BalanceChanges -> {
+                Log.d("StatisticsFragment", "Getting data from Room")
+                transactionViewModel.getAll.observe(viewLifecycleOwner) { allTransactions ->
+                    balanceChangeViewModel.getAll.observe(viewLifecycleOwner) { allBalanceChanges ->
+                        if (allTransactions.isNotEmpty() || allBalanceChanges.isNotEmpty()) {
+                            val firstBalanceChange =
+                                DateUtils.getFirstBalanceChange(allBalanceChanges)
+                            val firstTransaction = DateUtils.getFirstTransaction(allTransactions)
+                            val firstDateTime = when {
+                                firstBalanceChange.dateTime.isBefore(firstTransaction.dateTime) -> {
+                                    firstBalanceChange.dateTime
+                                }
+                                else -> {
+                                    firstTransaction.dateTime
+                                }
+                            }
+
+                            val entryHelpers = mutableListOf<MyEntryHelper>()
+
+
+                            // find all X for transactions
+                            for (transaction in allTransactions) {
+                                val transactionXPos = ChartUtils.getXPosOfDateTime(
+                                    firstDateTime,
+                                    currentChartPeriod,
+                                    transaction.dateTime
+                                )
+
+                                val sameEntry = entryHelpers.find { item ->
+                                    item.x == transactionXPos
+                                }
+
+                                if (sameEntry == null) {
+                                    entryHelpers.add(MyEntryHelper(transactionXPos).also {
+                                        it.transactions.add(
+                                            transaction
+                                        )
+                                    })
+                                } else {
+                                    sameEntry.transactions.add(transaction)
+                                }
+                            }
+
+                            // find x for balanceChanges
+                            for (balanceChange in allBalanceChanges) {
+                                val balanceChangeXPos = ChartUtils.getXPosOfDateTime(
+                                    firstDateTime,
+                                    currentChartPeriod,
+                                    balanceChange.dateTime
+                                )
+
+                                val sameEntry = entryHelpers.find { item ->
+                                    item.x == balanceChangeXPos
+                                }
+
+                                if (sameEntry == null) {
+                                    entryHelpers.add(MyEntryHelper(balanceChangeXPos).also {
+                                        it.lastBalanceChange = balanceChange
+                                    })
+                                } else {
+                                    if (sameEntry.lastBalanceChange == null ||
+                                        sameEntry.lastBalanceChange!!.dateTime
+                                            .isBefore(balanceChange.dateTime)
+                                    )
+                                        sameEntry.lastBalanceChange = balanceChange
+                                }
+                            }
+                            val entries = arrayListOf<Entry>()
+
+                            for (entryHelper in entryHelpers) {
+                                var balance = 0.0
+
+                                // if lastBalanceChange is not null = set balance to it
+                                entryHelper.lastBalanceChange?.also {
+                                    balance = it.newValue
+                                }
+
+
+                                for (transaction in entryHelper.transactions) {
+                                    // if lastBalanceChange is not null
+                                    // and is later than current transaction
+                                    if (entryHelper.lastBalanceChange?.dateTime?.isAfter(transaction.dateTime) == true)
+                                        continue
+
+                                    balance += transaction.changeAmount
+                                }
+
+                                entries.add(Entry(entryHelper.x, balance.toFloat()))
+                            }
+
+                            val lineDataSet =
+                                LineDataSet(entries, "Balance states as of period end")
+                            val lineData = LineData(lineDataSet)
+                            lineChart.data = lineData
+                            lineChart.invalidate()
+                            val xAxis = lineChart.xAxis
+
+                            xAxis.position = XAxis.XAxisPosition.BOTTOM
+                            xAxis.textSize = 12f
+
+                            Log.d("StatisticsFragment", "Updating chart")
+                        }
+                    }
+                }
 
             }
             StatisticsMode.Transactions -> {
@@ -116,13 +237,13 @@ class StatisticsFragment : Fragment(), AdapterView.OnItemSelectedListener {
                         val posEntries = mutableListOf<BarEntry>()
                         val negEntries = mutableListOf<BarEntry>()
 
-                        val firstTransaction = DateUtils.getFirstTransaction(allTransactions)
+                        val firstDateTime = DateUtils.getFirstTransaction(allTransactions).dateTime
 
                         for (transaction in allTransactions) {
-                            val transactionXPos = ChartUtils.getXPosOfTransaction(
-                                firstTransaction,
+                            val transactionXPos = ChartUtils.getXPosOfDateTime(
+                                firstDateTime,
                                 currentChartPeriod,
-                                transaction
+                                transaction.dateTime
                             )
                             if (transaction.changeAmount >= 0) {
                                 val sameEntry = posEntries.find { entry ->
@@ -161,8 +282,8 @@ class StatisticsFragment : Fragment(), AdapterView.OnItemSelectedListener {
                         negBarDataSet.color = Color.RED
 
                         val barData = BarData(posBarDataSet, negBarDataSet)
-                        chart.data = barData
-                        chart.invalidate()
+                        barChart.data = barData
+                        barChart.invalidate()
                         Log.d("StatisticsFragment", "Updating chart")
                     }
                 }
@@ -184,7 +305,7 @@ class StatisticsFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
         // Init mode from shared preferences
         val modeOrdinal = sharedPref.getInt("statistics_mode", StatisticsMode.Transactions.ordinal)
-        changeCurrentMode(StatisticsMode.values()[modeOrdinal])
+        changeCurrentMode(StatisticsMode.values()[modeOrdinal], suspendScreenUpdate = true)
 
         // Init period from shared preferences
         val periodOrdinal = sharedPref.getInt("statistics_period", Period.MONTH.ordinal)
@@ -294,11 +415,15 @@ class StatisticsFragment : Fragment(), AdapterView.OnItemSelectedListener {
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-//        TODO("Not yet implemented")
+        when (position) {
+            0 -> changeCurrentMode(StatisticsMode.Transactions)
+            1 -> changeCurrentMode(StatisticsMode.BalanceChanges)
+            else -> changeCurrentMode(StatisticsMode.Transactions)
+        }
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
-//        TODO("Not yet implemented")
+        changeCurrentMode(StatisticsMode.Transactions)
     }
 
 
