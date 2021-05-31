@@ -82,7 +82,9 @@ class StatisticsFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
         // BarChart
         barChart = binding.barChart
+        barChart.setPinchZoom(true)
         lineChart = binding.lineChart
+        lineChart.setPinchZoom(true)
 
         //TODO: Найти способ увеличить текст на графике
 //        chart.text
@@ -145,79 +147,135 @@ class StatisticsFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
                             // find all X for transactions
                             for (transaction in allTransactions) {
+                                Log.d(
+                                    "StatisticsFragment",
+                                    "transaction{changeAmount: ${transaction.changeAmount}, dateTime: ${transaction.dateTime.toString()}, comment: ${transaction.comment}}"
+                                )
                                 val transactionXPos = ChartUtils.getXPosOfDateTime(
                                     firstDateTime,
                                     currentChartPeriod,
                                     transaction.dateTime
                                 )
 
+                                Log.d("StatisticsFragment", "transaction x pos: $transactionXPos")
+
                                 val sameEntry = entryHelpers.find { item ->
                                     item.x == transactionXPos
                                 }
 
                                 if (sameEntry == null) {
+                                    Log.d("StatisticsFragment", "Entry with same x pos not found")
                                     entryHelpers.add(MyEntryHelper(transactionXPos).also {
                                         it.transactions.add(
                                             transaction
                                         )
                                     })
                                 } else {
+                                    Log.d("StatisticsFragment", "Entry with same x pos found")
                                     sameEntry.transactions.add(transaction)
                                 }
                             }
 
                             // find x for balanceChanges
                             for (balanceChange in allBalanceChanges) {
+                                Log.d(
+                                    "StatisticsFragment",
+                                    "balanceChange{newValue: ${balanceChange.newValue}, dateTime: ${balanceChange.dateTime.toString()}}"
+                                )
+
                                 val balanceChangeXPos = ChartUtils.getXPosOfDateTime(
                                     firstDateTime,
                                     currentChartPeriod,
                                     balanceChange.dateTime
                                 )
 
+                                Log.d(
+                                    "StatisticsFragment",
+                                    "balanceChange x pos: $balanceChangeXPos"
+                                )
+
+
                                 val sameEntry = entryHelpers.find { item ->
                                     item.x == balanceChangeXPos
                                 }
 
                                 if (sameEntry == null) {
+                                    Log.d("StatisticsFragment", "Entry with same x pos not found")
                                     entryHelpers.add(MyEntryHelper(balanceChangeXPos).also {
                                         it.lastBalanceChange = balanceChange
                                     })
                                 } else {
+                                    Log.d("StatisticsFragment", "Entry with same x pos found")
                                     if (sameEntry.lastBalanceChange == null ||
                                         sameEntry.lastBalanceChange!!.dateTime
                                             .isBefore(balanceChange.dateTime)
-                                    )
+                                    ) {
+                                        Log.d(
+                                            "StatisticsFragment",
+                                            "balanceChange is later than balanceChange inside entry with same x"
+                                        )
                                         sameEntry.lastBalanceChange = balanceChange
+                                    }
                                 }
                             }
+
+
                             val entries = arrayListOf<Entry>()
 
                             for (entryHelper in entryHelpers) {
+                                Log.d("StatisticsFragment", "entryHelper with x: ${entryHelper.x}")
                                 var balance = 0.0
 
                                 // if lastBalanceChange is not null = set balance to it
                                 entryHelper.lastBalanceChange?.also {
                                     balance = it.newValue
+                                    Log.d(
+                                        "StatisticsFragment",
+                                        "lastBalanceChange{newValue: ${it.newValue}, dateTime: ${it.dateTime}}"
+                                    )
                                 }
 
-
+                                Log.d("StatisticsFragment", "transactions inside this entry:")
                                 for (transaction in entryHelper.transactions) {
+                                    Log.d(
+                                        "StatisticsFragment",
+                                        "transaction{changeAmount: ${transaction.changeAmount}, dateTime: ${transaction.dateTime.toString()}, comment: ${transaction.comment}}"
+                                    )
+
                                     // if lastBalanceChange is not null
                                     // and is later than current transaction
-                                    if (entryHelper.lastBalanceChange?.dateTime?.isAfter(transaction.dateTime) == true)
+                                    if (entryHelper.lastBalanceChange?.dateTime?.isAfter(transaction.dateTime) == true) {
+                                        Log.d("StatisticsFragment", "transaction is before the lastBalanceChange, skipping...")
                                         continue
-
+                                    }
+                                    Log.d("StatisticsFragment", "Adding transaction.changeAmount to y")
                                     balance += transaction.changeAmount
                                 }
-
+                                Log.d("StatisticsFragment", "Adding new entry to Entry array")
                                 entries.add(Entry(entryHelper.x, balance.toFloat()))
+                                Log.d("StatisticsFragment", "Added new Entry(x: ${entryHelper.x}, y: ${balance.toFloat()})")
+                            }
+
+                            entries.sortBy {
+                                it.x
                             }
 
                             val lineDataSet =
-                                LineDataSet(entries, "Balance states as of period end")
+                                LineDataSet(entries, getString(R.string.line_graph_desc))
+
+                            lineDataSet.setColor(Color.CYAN);
+                            lineDataSet.setCircleColor(Color.DKGRAY);
+                            lineDataSet.setLineWidth(4f);
+                            lineDataSet.setCircleRadius(3f);
+                            lineDataSet.setDrawCircleHole(false);
+                            lineDataSet.setValueTextSize(15f);
+//                            lineDataSet.setDrawFilled(true);
+
                             val lineData = LineData(lineDataSet)
                             lineChart.data = lineData
                             lineChart.invalidate()
+
+
                             val xAxis = lineChart.xAxis
 
                             xAxis.position = XAxis.XAxisPosition.BOTTOM
@@ -276,9 +334,17 @@ class StatisticsFragment : Fragment(), AdapterView.OnItemSelectedListener {
                             }
                         }
 
-                        val posBarDataSet = BarDataSet(posEntries, "Incomes")
+                        posEntries.sortBy {
+                            it.x
+                        }
+
+                        negEntries.sortBy {
+                            it.x
+                        }
+
+                        val posBarDataSet = BarDataSet(posEntries, getString(R.string.income))
                         posBarDataSet.color = Color.BLUE
-                        val negBarDataSet = BarDataSet(negEntries, "Outlays")
+                        val negBarDataSet = BarDataSet(negEntries, getString(R.string.outlay))
                         negBarDataSet.color = Color.RED
 
                         val barData = BarData(posBarDataSet, negBarDataSet)

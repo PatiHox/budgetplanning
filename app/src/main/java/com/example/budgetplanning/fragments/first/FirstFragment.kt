@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.budgetplanning.R
 import com.example.budgetplanning.data.entities.BalanceChange
@@ -26,6 +27,7 @@ import com.example.budgetplanning.utils.TextUtils
 import java.text.DecimalFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.*
 
 
 class FirstFragment : Fragment() {
@@ -41,6 +43,7 @@ class FirstFragment : Fragment() {
     private lateinit var transactionAdapter: TransactionAdapter
 
     private lateinit var mainMenu: Menu
+
 
     private val transactionDataObserver =
         TransactionAdapterDataObserver(/*::dataInserted,*/ ::dataRemoved, ::dataChanged)
@@ -69,14 +72,14 @@ class FirstFragment : Fragment() {
 
 
     private fun updateScreen() {
-        binding.tvBal.text = TextUtils.doubleToMoney(balance, resources, false)
-        binding.tvChange.text = TextUtils.doubleToMoney(change, resources)
+        binding.tvBal.text = TextUtils.doubleToMoney(balance, requireContext(), false)
+        binding.tvChange.text = TextUtils.doubleToMoney(change, requireContext())
         when {
             change >= 0 -> binding.tvChange.setTextColor(Color.parseColor("#174300"))
             else -> binding.tvChange.setTextColor(Color.parseColor("#7C0000"))
         }
-        binding.tvIncome.text = TextUtils.doubleToMoney(income, resources)
-        binding.tvOutlay.text = TextUtils.doubleToMoney(outlay, resources)
+        binding.tvIncome.text = TextUtils.doubleToMoney(income, requireContext())
+        binding.tvOutlay.text = TextUtils.doubleToMoney(outlay, requireContext())
     }
 
     private fun saveNewBalance(newBal: Double) {
@@ -435,4 +438,32 @@ class FirstFragment : Fragment() {
         income = 0.0
         balance = 0.0
     }
+
+
+    /*override fun onResume() {
+        super.onResume()
+
+        *//*val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        when (prefs.getString("language", "sys")) {
+            "eng" -> {
+                Locale.setDefault(Locale.US)
+            }
+            "ukr" -> {
+                Locale.setDefault(Locale.forLanguageTag("ua_uk"))
+            }
+            "rub" -> {
+                Locale.setDefault(Locale.forLanguageTag("ru_ru"))
+            }
+            else -> {
+                Locale.setDefault(resources.configuration.locales.get(0))
+            }
+        }*//*
+//        enabled = prefs.getBoolean("enabled", false);
+//        login = prefs.getString("login", "не установлено");
+//        settingsText.setText(login);
+//        if (enabled)
+//            settingsText.setVisibility(View.VISIBLE);
+//        else
+//            settingsText.setVisibility(View.INVISIBLE);
+    }*/
 }

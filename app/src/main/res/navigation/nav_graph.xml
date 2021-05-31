@@ -20,6 +20,9 @@
         <action
             android:id="@+id/action_FirstFragment_to_balanceHistoryFragment"
             app:destination="@id/balanceHistoryFragment" />
+        <action
+            android:id="@+id/action_FirstFragment_to_settingsFragment2"
+            app:destination="@id/settingsFragment2" />
     </fragment>
     <fragment
         android:id="@+id/SecondFragment"
@@ -47,6 +50,14 @@
         tools:layout="@layout/fragment_balance_history" >
         <action
             android:id="@+id/action_balanceHistoryFragment_to_FirstFragment"
+            app:destination="@id/FirstFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsFragment2"
+        android:name="com.example.budgetplanning.fragments.settings_fragment.SettingsFragment"
+        android:label="@string/settings_title" >
+        <action
+            android:id="@+id/action_settingsFragment2_to_FirstFragment"
             app:destination="@id/FirstFragment" />
     </fragment>
 </navigation>

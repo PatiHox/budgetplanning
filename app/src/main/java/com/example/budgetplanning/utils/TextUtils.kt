@@ -1,8 +1,7 @@
 package com.example.budgetplanning.utils
 
-import android.content.res.Resources
-import android.util.Log
-import android.widget.EditText
+import android.content.Context
+import androidx.preference.PreferenceManager
 import com.example.budgetplanning.R
 import java.util.*
 
@@ -10,20 +9,35 @@ import java.util.*
 object TextUtils {
     fun doubleToMoney(
         input: Double,
-        resources: Resources,
+        context: Context,
         doAddPositiveSign: Boolean = true
     ): String {
-        var money = resources.getString(
+        var money = context.resources.getString(
             R.string.money,
             String.format("%.2f", input),
-            Currency.getInstance(Locale.getDefault()).symbol
+            getMoneySymbol(context)
         )
         if (doAddPositiveSign && input > 0)
             money = "+$money"
         return money
     }
 
-    fun getMoneySymbol(): String{
-        return Currency.getInstance(Locale.getDefault()).symbol
+    fun getMoneySymbol(context: Context): String {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+
+        return when (prefs.getString("currency_symbol", "sys")) {
+            "usd" -> {
+                "$"
+            }
+            "uah" -> {
+                "₴"
+            }
+            "rub" -> {
+                "₽"
+            }
+            else -> {
+                Currency.getInstance(Locale.getDefault()).symbol
+            }
+        }
     }
 }

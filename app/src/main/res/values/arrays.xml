@@ -1,0 +1,32 @@
+<resources>
+    <!-- Language Preference -->
+    <!--<string-array name="language_entries">
+        <item>System</item>
+        <item>English</item>
+        <item>Ukrainian</item>
+        <item>Russian</item>
+    </string-array>
+
+    <string-array name="language_values">
+        <item>sys</item>
+        <item>eng</item>
+        <item>ukr</item>
+        <item>rus</item>
+    </string-array>-->
+
+    <!--  Currency Symbol Preference  -->
+    <string-array name="cur_sym_entries">
+        <item>System</item>
+        <item>$</item>
+        <item>₴</item>
+        <item>₽</item>
+    </string-array>
+
+    <string-array name="cur_sym_values">
+        <item>sys</item>
+        <item>usd</item>
+        <item>uah</item>
+        <item>rub</item>
+    </string-array>
+
+</resources>

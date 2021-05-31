@@ -57,4 +57,15 @@
         <item>Balance changes</item>
     </string-array>
 
+    <!-- Preference Titles -->
+    <string name="localization_header">Local Preferences</string>
+
+    <!-- Local Preferences -->
+    <string name="currency_sym_title">Currency Symbol</string>
+<!--    <string name="language_title">App Language</string>-->
+
+    <string name="settings_title">Settings</string>
+    <string name="line_graph_desc">Balance states as of period end</string>
+
+
 </resources>

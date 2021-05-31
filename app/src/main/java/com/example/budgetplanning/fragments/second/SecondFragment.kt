@@ -89,7 +89,7 @@ class SecondFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
         // etChangeSum
         val etChangeSum: EditText = binding.etChangeSum
-        etChangeSum.hint = etChangeSum.hint.toString() + "(${TextUtils.getMoneySymbol()})"
+        etChangeSum.hint = etChangeSum.hint.toString() + "(${TextUtils.getMoneySymbol(requireContext())})"
         etChangeSum.addTextChangedListener(ChangeSumTextWatcher(binding))
 
         // etChangeDateTime

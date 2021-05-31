@@ -55,7 +55,7 @@ class TransactionViewHolder(val binding: TransactionItemBinding) :
         setChangeAmountText(
             TextUtils.doubleToMoney(
                 boundTransaction.changeAmount,
-                binding.root.resources
+                binding.root.context
             )
         )
 
