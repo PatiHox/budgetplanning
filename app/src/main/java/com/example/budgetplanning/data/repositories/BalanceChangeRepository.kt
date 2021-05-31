@@ -16,4 +16,8 @@ class BalanceChangeRepository(private val balanceChangeDao: BalanceChangeDao) {
     suspend fun delete(balanceChange: BalanceChange) {
         balanceChangeDao.delete(balanceChange)
     }
+
+    suspend fun update(balanceChange: BalanceChange){
+        balanceChangeDao.update(balanceChange)
+    }
 }

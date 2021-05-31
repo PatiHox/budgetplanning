@@ -35,4 +35,10 @@ class BalanceChangeViewModel(application: Application): AndroidViewModel(applica
             repository.delete(balanceChange)
         }
     }
+
+    fun update(balanceChange: BalanceChange){
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.update(balanceChange)
+        }
+    }
 }

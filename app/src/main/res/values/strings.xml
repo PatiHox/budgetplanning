@@ -44,7 +44,6 @@
     <string name="yes">Yes</string>
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
-    <string name="ok">Ok</string>
 
     <string name="info">Info</string>
     <string name="edit">Edit</string>
@@ -66,6 +65,8 @@
 
     <string name="settings_title">Settings</string>
     <string name="line_graph_desc">Balance states as of period end</string>
+    <string name="balance_history_title">Balance Changes</string>
+    <string name="button_more_description">More</string>
 
 
 </resources>

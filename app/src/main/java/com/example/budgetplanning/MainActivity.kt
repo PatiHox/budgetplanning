@@ -43,6 +43,10 @@ class MainActivity : AppCompatActivity() {
                 findNavController(R.id.nav_host_fragment).navigate(R.id.action_FirstFragment_to_statisticsFragment)
                 true
             }
+            R.id.action_balance_change_history -> {
+                findNavController(R.id.nav_host_fragment).navigate(R.id.action_FirstFragment_to_balanceHistoryFragment)
+                true
+            }
             R.id.action_show_for_period -> {
 
                 true
@@ -52,7 +56,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showPopupMenu(v: View, menuResId: Int) {
-        val popupMenu: PopupMenu = PopupMenu(this, v)
+        val popupMenu = PopupMenu(this, v)
         popupMenu.inflate(menuResId)
     }
 

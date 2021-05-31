@@ -19,6 +19,5 @@ class SettingsFragment : PreferenceFragmentCompat() {
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
         menu.clear()
-//        menu.setGroupVisible(R.id.statistics_group, false)
     }
 }

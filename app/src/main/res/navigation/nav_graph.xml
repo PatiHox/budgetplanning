@@ -46,7 +46,7 @@
     <fragment
         android:id="@+id/balanceHistoryFragment"
         android:name="com.example.budgetplanning.fragments.balance_history.BalanceHistoryFragment"
-        android:label="fragment_balance_history"
+        android:label="@string/balance_history_title"
         tools:layout="@layout/fragment_balance_history" >
         <action
             android:id="@+id/action_balanceHistoryFragment_to_FirstFragment"

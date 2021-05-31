@@ -1,6 +1,5 @@
-package com.example.budgetplanning.fragments.first.recycler_view
+package com.example.budgetplanning.fragments.balance_history.recycler_view
 
-import android.content.DialogInterface
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
@@ -12,10 +11,11 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
 import com.example.budgetplanning.R
+import com.example.budgetplanning.data.entities.BalanceChange
 import com.example.budgetplanning.data.entities.Transaction
+import com.example.budgetplanning.databinding.BalanceHistoryItemBinding
 import com.example.budgetplanning.databinding.DatePickerBinding
 import com.example.budgetplanning.databinding.TimePickerBinding
-import com.example.budgetplanning.databinding.TransactionItemBinding
 import com.example.budgetplanning.utils.DateConverter
 import com.example.budgetplanning.utils.TextUtils
 import java.text.DecimalFormat
@@ -25,7 +25,7 @@ import java.time.format.FormatStyle
 import kotlin.properties.Delegates
 
 
-class TransactionViewHolder(val binding: TransactionItemBinding) :
+class BalanceChangeViewHolder(val binding: BalanceHistoryItemBinding) :
     RecyclerView.ViewHolder(binding.root),
     TextWatcher {
 
@@ -41,21 +41,22 @@ class TransactionViewHolder(val binding: TransactionItemBinding) :
         binding.tvChangeAmount.text = changeAmount
     }
 
-    lateinit var parentAdapter: TransactionAdapter
+    lateinit var parentAdapter: BalanceChangeAdapter
     var positionInAdapter by Delegates.notNull<Int>()
-    lateinit var boundTransaction: Transaction
+    lateinit var boundBalanceChange: BalanceChange
 
-    fun bind(adapter: TransactionAdapter, position: Int) {
+    fun bind(adapter: BalanceChangeAdapter, position: Int) {
         parentAdapter = adapter
         positionInAdapter = position
-        boundTransaction = parentAdapter.getItemAt(positionInAdapter)
+        boundBalanceChange = parentAdapter.getItemAt(positionInAdapter)
 
-        setDateText(boundTransaction.dateTime.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)))
-        setTimeText(boundTransaction.dateTime.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM)))
+        setDateText(boundBalanceChange.dateTime.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)))
+        setTimeText(boundBalanceChange.dateTime.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM)))
         setChangeAmountText(
             TextUtils.doubleToMoney(
-                boundTransaction.changeAmount,
-                binding.root.context
+                boundBalanceChange.newValue,
+                binding.root.context,
+                false
             )
         )
 
@@ -75,7 +76,7 @@ class TransactionViewHolder(val binding: TransactionItemBinding) :
 
                         alertBuilder.setPositiveButton(context.getString(R.string.yes)
                         ) { _, _ ->
-                            parentAdapter.transactionViewModel.delete(boundTransaction)
+                            parentAdapter.balanceChangeViewModel.delete(boundBalanceChange)
                             parentAdapter.removeItemAt(adapterPosition)
                         }
 
@@ -96,19 +97,15 @@ class TransactionViewHolder(val binding: TransactionItemBinding) :
                         val etChangeAmount = EditText(context).also {
                             it.hint = context.getString(R.string.change_sum)
                             val decFor = DecimalFormat("#0.00")
-                            it.setText(decFor.format(boundTransaction.changeAmount))
+                            it.setText(decFor.format(boundBalanceChange.newValue))
                             it.setRawInputType(InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL or InputType.TYPE_NUMBER_FLAG_SIGNED)
                             it.inputType =
                                 InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL or InputType.TYPE_NUMBER_FLAG_SIGNED
                             it.addTextChangedListener(this)
                         }
-                        val etChangeComment = EditText(binding.root.context).also {
-                            it.hint = context.getString(R.string.change_sum_comment)
-                            boundTransaction.comment?.let { comment -> it.setText(comment) }
-                        }
                         val etChangeDateTime = EditText(binding.root.context).also {
                             it.hint = context.getString(R.string.change_sum_date)
-                            it.setText(boundTransaction.dateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+                            it.setText(boundBalanceChange.dateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
                             it.isFocusable = false
                         }
 
@@ -168,7 +165,6 @@ class TransactionViewHolder(val binding: TransactionItemBinding) :
 
 
                         linearLayout.addView(etChangeAmount)
-                        linearLayout.addView(etChangeComment)
                         linearLayout.addView(etChangeDateTime)
 
                         val horizontalLinearLayout = LinearLayout(context).also {
@@ -203,17 +199,16 @@ class TransactionViewHolder(val binding: TransactionItemBinding) :
                                             )
                                                 .show()
                                         } else {
-                                            val newTransaction = Transaction(
-                                                boundTransaction.id,
+                                            val newBalanceChange = BalanceChange(
+                                                boundBalanceChange.id,
                                                 etChangeAmount.text.toString().toDouble(),
                                                 DateConverter.toLocalDateTime(etChangeDateTime.text.toString())!!,
-                                                etChangeComment.text.toString()
                                             )
 
-                                            parentAdapter.transactionViewModel.update(newTransaction)
+                                            parentAdapter.balanceChangeViewModel.update(newBalanceChange)
                                             parentAdapter.updateItemAt(
                                                 positionInAdapter,
-                                                newTransaction
+                                                newBalanceChange
                                             )
                                             iEditAlertDialog.dismiss()
                                         }
@@ -240,19 +235,15 @@ class TransactionViewHolder(val binding: TransactionItemBinding) :
                         linearLayout.orientation = LinearLayout.VERTICAL
 
                         val tvChangeAmount = TextView(context).also {
-                            it.setText(boundTransaction.changeAmount.toString())
-                        }
-                        val tvChangeComment = TextView(binding.root.context).also {
-                            boundTransaction.comment?.let { comment -> it.setText(comment) }
+                            it.setText(boundBalanceChange.newValue.toString())
                         }
                         val tvChangeDateTime = TextView(binding.root.context).also {
-                            it.setText(boundTransaction.dateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+                            it.setText(boundBalanceChange.dateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
                         }
 
 
                         for (tv in mutableListOf(
                             tvChangeAmount,
-                            tvChangeComment,
                             tvChangeDateTime
                         )) {
                             tv.paint.textSize = TypedValue.applyDimension(
@@ -296,10 +287,6 @@ class TransactionViewHolder(val binding: TransactionItemBinding) :
                             it.setText(R.string.change_sum)
                         })
                         linearLayout.addView(tvChangeAmount)
-                        linearLayout.addView(TextView(context).also {
-                            it.setText(R.string.change_sum_comment)
-                        })
-                        linearLayout.addView(tvChangeComment)
                         linearLayout.addView(TextView(context).also {
                             it.setText(R.string.change_sum_date)
                         })

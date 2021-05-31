@@ -119,7 +119,8 @@ class FirstFragment : Fragment() {
             // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
             input.setRawInputType(InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_SIGNED or InputType.TYPE_NUMBER_FLAG_DECIMAL or InputType.TYPE_NUMBER_VARIATION_NORMAL)
 
-            val regex = Regex("^[-+]?(\\d+)(?:[\\.,]\\d{0,2})?")
+
+            @Suppress("RegExpRedundantEscape") val regex = Regex("^[-+]?(\\d+)(?:[\\.,]\\d{0,2})?")
 
             val regexResult = regex.find(balance.toBigDecimal().toString())
 
@@ -377,7 +378,7 @@ class FirstFragment : Fragment() {
             R.id.select_three_months,
             R.id.select_week,
             R.id.select_year -> {
-                if (lastChecked != null && item.itemId != lastChecked) {
+                /*if ((lastChecked != null && item.itemId != lastChecked) || lastChecked == null) {*/
                     val subMenu = mainMenu.findItem(R.id.action_show_for_period).subMenu
                     lastChecked?.let { subMenu.findItem(it).isChecked = false }
                     item.isChecked = true
@@ -415,7 +416,7 @@ class FirstFragment : Fragment() {
                     }
                     sharedPref.edit().putInt("period", periodId).apply()
                     dataChanged()
-                }
+
                 true
             }
             else -> {
@@ -440,30 +441,8 @@ class FirstFragment : Fragment() {
     }
 
 
-    /*override fun onResume() {
+    override fun onResume() {
         super.onResume()
-
-        *//*val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        when (prefs.getString("language", "sys")) {
-            "eng" -> {
-                Locale.setDefault(Locale.US)
-            }
-            "ukr" -> {
-                Locale.setDefault(Locale.forLanguageTag("ua_uk"))
-            }
-            "rub" -> {
-                Locale.setDefault(Locale.forLanguageTag("ru_ru"))
-            }
-            else -> {
-                Locale.setDefault(resources.configuration.locales.get(0))
-            }
-        }*//*
-//        enabled = prefs.getBoolean("enabled", false);
-//        login = prefs.getString("login", "не установлено");
-//        settingsText.setText(login);
-//        if (enabled)
-//            settingsText.setVisibility(View.VISIBLE);
-//        else
-//            settingsText.setVisibility(View.INVISIBLE);
-    }*/
+        updateScreen()
+    }
 }

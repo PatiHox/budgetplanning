@@ -17,4 +17,7 @@ interface BalanceChangeDao {
 
     @Delete
     suspend fun delete(balanceChange: BalanceChange)
+
+    @Update
+    suspend fun update(balanceChange: BalanceChange)
 }
