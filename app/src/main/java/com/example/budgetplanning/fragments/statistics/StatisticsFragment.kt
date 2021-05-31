@@ -24,6 +24,7 @@ import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.*
+import java.time.LocalDateTime
 
 
 class StatisticsFragment : Fragment(), AdapterView.OnItemSelectedListener {
@@ -130,17 +131,29 @@ class StatisticsFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 transactionViewModel.getAll.observe(viewLifecycleOwner) { allTransactions ->
                     balanceChangeViewModel.getAll.observe(viewLifecycleOwner) { allBalanceChanges ->
                         if (allTransactions.isNotEmpty() || allBalanceChanges.isNotEmpty()) {
-                            val firstBalanceChange =
-                                DateUtils.getFirstBalanceChange(allBalanceChanges)
-                            val firstTransaction = DateUtils.getFirstTransaction(allTransactions)
-                            val firstDateTime = when {
-                                firstBalanceChange.dateTime.isBefore(firstTransaction.dateTime) -> {
-                                    firstBalanceChange.dateTime
+                            val firstDateTime: LocalDateTime = when {
+                                allTransactions.isEmpty() && allBalanceChanges.isNotEmpty() -> {
+                                    DateUtils.getFirstBalanceChange(allBalanceChanges).dateTime
                                 }
-                                else -> {
-                                    firstTransaction.dateTime
+                                allTransactions.isNotEmpty() && allBalanceChanges.isEmpty() ->{
+                                    DateUtils.getFirstTransaction(allTransactions).dateTime
+                                }
+                                else ->{
+                                    val firstBalanceChange =
+                                        DateUtils.getFirstBalanceChange(allBalanceChanges)
+                                    val firstTransaction = DateUtils.getFirstTransaction(allTransactions)
+
+                                    when {
+                                        firstBalanceChange.dateTime.isBefore(firstTransaction.dateTime) -> {
+                                            firstBalanceChange.dateTime
+                                        }
+                                        else -> {
+                                            firstTransaction.dateTime
+                                        }
+                                    }
                                 }
                             }
+
 
                             val entryHelpers = mutableListOf<MyEntryHelper>()
 
@@ -245,15 +258,24 @@ class StatisticsFragment : Fragment(), AdapterView.OnItemSelectedListener {
                                     // if lastBalanceChange is not null
                                     // and is later than current transaction
                                     if (entryHelper.lastBalanceChange?.dateTime?.isAfter(transaction.dateTime) == true) {
-                                        Log.d("StatisticsFragment", "transaction is before the lastBalanceChange, skipping...")
+                                        Log.d(
+                                            "StatisticsFragment",
+                                            "transaction is before the lastBalanceChange, skipping..."
+                                        )
                                         continue
                                     }
-                                    Log.d("StatisticsFragment", "Adding transaction.changeAmount to y")
+                                    Log.d(
+                                        "StatisticsFragment",
+                                        "Adding transaction.changeAmount to y"
+                                    )
                                     balance += transaction.changeAmount
                                 }
                                 Log.d("StatisticsFragment", "Adding new entry to Entry array")
                                 entries.add(Entry(entryHelper.x, balance.toFloat()))
-                                Log.d("StatisticsFragment", "Added new Entry(x: ${entryHelper.x}, y: ${balance.toFloat()})")
+                                Log.d(
+                                    "StatisticsFragment",
+                                    "Added new Entry(x: ${entryHelper.x}, y: ${balance.toFloat()})"
+                                )
                             }
 
                             entries.sortBy {
@@ -263,13 +285,12 @@ class StatisticsFragment : Fragment(), AdapterView.OnItemSelectedListener {
                             val lineDataSet =
                                 LineDataSet(entries, getString(R.string.line_graph_desc))
 
-                            lineDataSet.setColor(Color.CYAN);
-                            lineDataSet.setCircleColor(Color.DKGRAY);
-                            lineDataSet.setLineWidth(4f);
-                            lineDataSet.setCircleRadius(3f);
-                            lineDataSet.setDrawCircleHole(false);
-                            lineDataSet.setValueTextSize(15f);
-//                            lineDataSet.setDrawFilled(true);
+                            lineDataSet.setColor(Color.CYAN)
+                            lineDataSet.setCircleColor(Color.DKGRAY)
+                            lineDataSet.setLineWidth(4f)
+                            lineDataSet.setCircleRadius(3f)
+                            lineDataSet.setDrawCircleHole(false)
+                            lineDataSet.setValueTextSize(15f)
 
                             val lineData = LineData(lineDataSet)
                             lineChart.data = lineData

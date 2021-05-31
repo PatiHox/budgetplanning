@@ -1,0 +1,70 @@
+<resources>
+    <string name="app_name">Budget Planning</string>
+    <string name="action_settings">Настройки</string>
+    <string name="first_fragment_label">Планирование бюджета</string>
+    <string name="second_fragment_label">Добавить транзакцию</string>
+    <string name="next">Далее</string>
+    <string name="previous">Предыдущий</string>
+    <string name="balance">Баланс</string>
+    <string name="income">Доходы</string>
+    <string name="outlay">Расходы</string>
+    <string name="money" translatable="false">%1$s%2$s</string>
+    <string name="dbname" translatable="false">budgplan</string>
+    <string name="change_sum">Изменить сумму</string>
+    <string name="change_sum_comment">Заметка (напр. где вы потратили деньги)</string>
+    <string name="change_sum_date">Дата и время транзакции</string>
+    <string name="now">Сейчас</string>
+    <string name="add">Добавить</string>
+    <string-array name="transaction_types">
+        <item>Израсходовано</item>
+        <item>Получено</item>
+    </string-array>
+    <string name="show_for_period">Показать данные за период</string>
+    <string name="statistics">Статистика</string>
+    <string name="day">День</string>
+    <string name="three_days">3 дня</string>
+    <string name="week">Неделя</string>
+    <string name="month">Месяц</string>
+    <string name="three_months">3 месяца</string>
+    <string name="half_year">Полгода</string>
+    <string name="year">Год</string>
+    <string name="change_balance">Изменить баланс</string>
+    <string name="set">Выбрать</string>
+    <string name="skip">Пропустить</string>
+    <string name="balance_history">История изменений баланса</string>
+    <string-array name="signs">
+        <item>⠀+⠀</item>
+        <item>⠀-⠀</item>
+    </string-array>
+    <string name="new_balance">Введите новый баланс</string>
+
+
+    <string name="yes">Да</string>
+    <string name="cancel">Отмена</string>
+    <string name="save">Сохранить</string>
+
+    <string name="info">Информация</string>
+    <string name="edit">Редактировать</string>
+    <string name="remove">Убрать</string>
+    <string name="change_sum_not_empty">Сумма транзакции не должна быть пустой!!</string>
+    <string name="transaction_add_success">Транзакция успешно добавлена!</string>
+
+    <string-array name="statistics_modes">
+        <item>Доходы/Расходы</item>
+        <item>Изменения баланса</item>
+    </string-array>
+
+    <!-- Preference Titles -->
+    <string name="localization_header">Настройки Локализации</string>
+
+    <!-- Local Preferences -->
+    <string name="currency_sym_title">Текущая валюта</string>
+<!--    <string name="language_title">Язык приложения</string>-->
+
+    <string name="settings_title">Настройки</string>
+    <string name="line_graph_desc">Статус баланса на конец периода</string>
+    <string name="balance_history_title">Изменения баланса</string>
+    <string name="button_more_description">Больше</string>
+
+
+</resources>
